@@ -20,6 +20,9 @@ steps:
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
+    feedsToUse: 'select'
+    vstsFeed: 'LeaderAnalytics.Core/CoreArtifacts'
+    includeNuGetOrg: true
 
 - task: VSBuild@1
   inputs:
