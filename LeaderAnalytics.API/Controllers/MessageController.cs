@@ -24,7 +24,7 @@ namespace LeaderAnalytics.API.Controllers
         public IActionResult SendEMail(EmailMsg msg)
         {
             eMailClient.Send(msg.To, msg.Msg);
-            return Ok("done");
+            return Ok("ok");
         }
     }
 
