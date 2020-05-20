@@ -27,10 +27,11 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\\"    /p:UseWPP_CopyWebApplication=true  /p:OutDir="$(build.artifactstagingdirectory)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.ArtifactStagingDirectory)\\"    /p:UseWPP_CopyWebApplication=true  /p:OutDir="$(build.ArtifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     
+- task: PublishBuildArtifacts@1
 
 - task: VSTest@2
   inputs:
@@ -44,7 +45,7 @@ steps:
     publishWebProjects: True
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
-    
+ 
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
@@ -53,4 +54,5 @@ steps:
     WebAppName: 'LeaderAnalyticsWeb'
     VirtualApplication: 'api'
     UseWebDeploy: true
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
 
