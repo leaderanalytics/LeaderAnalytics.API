@@ -46,11 +46,8 @@ steps:
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
     
-
-
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'All Azure Services'
     appName: 'LeaderAnalyticsWeb'
-    VirtualApplication: 'api'
-    package: $(Build.ArtifactStagingDirectory)/**/*.zip
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
