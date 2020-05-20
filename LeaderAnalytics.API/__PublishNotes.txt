@@ -1,0 +1,7 @@
+﻿This project depends on LeaderAnalytics.Core
+In order for the Azure build process to be able access CoreArtifacts nuget repo, the following had to be done:
+In AzureDevOps navigate to LeaderAnalytics.API project.
+In the very bottom lower left corner of the page click on Project settings
+Click Settings under the Pipelines heading
+Turn off the setting titled "Limit job authorization scope to current project".
+See this: https://stackoverflow.com/questions/60296233/azure-devops-project-pipeline-not-able-to-access-nuget-package-from-artifact-fee
