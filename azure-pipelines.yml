@@ -36,12 +36,11 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: AzureWebApp@1
-  inputs:
-    azureSubscription: 'All Azure Services'
-    appName: 'LeaderAnalyticsWeb'
-    package: $(System.DefaultWorkingDirectory)/**/*.zip
-
 - task: AzureRmWebAppDeployment@4
   inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'All Azure Services'
+    appType: 'apiApp'
+    WebAppName: 'LeaderAnalyticsWeb'
     VirtualApplication: 'api'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
