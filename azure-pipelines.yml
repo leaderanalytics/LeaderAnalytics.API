@@ -36,6 +36,12 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: AzureWebApp@1
+  displayName: Azure Web App Deploy
+  inputs:
+    azureSubscription: $(azureSubscription)
+    appName: samplewebapp
+    package: $(System.DefaultWorkingDirectory)/**/*.zip
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
