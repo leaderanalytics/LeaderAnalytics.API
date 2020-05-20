@@ -37,11 +37,13 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: AzureWebApp@1
-  displayName: Azure Web App Deploy
   inputs:
-    azureSubscription: $(azureSubscription)
-    appName: samplewebapp
-    package: $(System.DefaultWorkingDirectory)/**/*.zip
+    azureSubscription: 'All Azure Services'
+    appType: 'webApp'
+    appName: 'LeaderAnalyticsWeb'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    deploymentMethod: 'zipDeploy'
+
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
