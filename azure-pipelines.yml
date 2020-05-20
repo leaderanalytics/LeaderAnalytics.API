@@ -38,7 +38,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'Pay-As-You-Go'
+    azureSubscription: 'All Azure Services'
     appName: 'LeaderAnalyticsWeb'
     package: $(System.DefaultWorkingDirectory)/**/*.zip
 
