@@ -35,3 +35,13 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Pay-As-You-Go'
+    appName: 'LeaderAnalyticsWeb'
+    package: $(System.DefaultWorkingDirectory)/**/*.zip
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    VirtualApplication: 'api'
