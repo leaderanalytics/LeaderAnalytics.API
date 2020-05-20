@@ -54,4 +54,5 @@ steps:
     WebAppName: 'LeaderAnalyticsWeb'
     VirtualApplication: 'api'
     UseWebDeploy: true
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
 
