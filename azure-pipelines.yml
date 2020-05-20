@@ -46,14 +46,7 @@ steps:
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
     
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'All Azure Services'
-    appType: 'apiApp'
-    WebAppName: 'LeaderAnalyticsWeb'
-    VirtualApplication: 'api'
-    UseWebDeploy: true
+
 
 - task: AzureWebApp@1
   inputs:
