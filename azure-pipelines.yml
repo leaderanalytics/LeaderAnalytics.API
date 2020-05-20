@@ -27,7 +27,7 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)\\"    /p:UseWPP_CopyWebApplication=true  /p:OutDir="$(build.artifactStagingDirectory)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.ArtifactStagingDirectory)\\"    /p:UseWPP_CopyWebApplication=true  /p:OutDir="$(build.ArtifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     
@@ -55,3 +55,9 @@ steps:
     VirtualApplication: 'api'
     UseWebDeploy: true
 
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'All Azure Services'
+    appName: 'LeaderAnalyticsWeb'
+    VirtualApplication: 'api'
+    package: $(Build.ArtifactStagingDirectory)/**/*.zip
