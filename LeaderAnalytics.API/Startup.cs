@@ -101,6 +101,7 @@ namespace LeaderAnalytics.API
                 "http://leaderanalyticsweb.azurewebsites.net",
                 "https://leaderanalyticsweb.azurewebsites.net",
                 "https://localhost:5001",
+                "https://localhost:44381",
                 "https://leaderanalyticstweb-staging.azurewebsites.net"
             }).AllowAnyMethod().AllowAnyHeader());
 

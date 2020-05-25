@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LeaderAnalytics.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LeaderAnalytics.API.Domain;
 
 namespace LeaderAnalytics.API.Controllers
 {
@@ -24,13 +25,8 @@ namespace LeaderAnalytics.API.Controllers
         public IActionResult SendEMail(EmailMsg msg)
         {
             eMailClient.Send(msg.To, msg.Msg);
-            return Ok("ok");
+            //return Ok("ok"); returning a string is necessary for jquery $.ajax
+            return Ok();
         }
-    }
-
-    public class EmailMsg 
-    { 
-        public string To { get; set; }
-        public string Msg { get; set; }
     }
 }

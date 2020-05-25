@@ -5,3 +5,6 @@ In the very bottom lower left corner of the page click on Project settings
 Click Settings under the Pipelines heading
 Turn off the setting titled "Limit job authorization scope to current project".
 See this: https://stackoverflow.com/questions/60296233/azure-devops-project-pipeline-not-able-to-access-nuget-package-from-artifact-fee
+
+Add this to .csproj to make IIS run out of process:
+<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
