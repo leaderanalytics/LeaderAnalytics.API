@@ -6,6 +6,9 @@ using LeaderAnalytics.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LeaderAnalytics.API.Domain;
+using System.Net.Http;
+using System.Net;
+using Microsoft.AspNetCore.Cors;
 
 namespace LeaderAnalytics.API.Controllers
 {
@@ -20,13 +23,23 @@ namespace LeaderAnalytics.API.Controllers
             this.eMailClient = eMailClient;
         }
 
+        [HttpGet]
+        [Route("")]
+        [Route("Identity")]
+        [EnableCors]
+        public ActionResult<string> Identity()
+        {
+            return "Leader Analytics API";
+        }
+
+
         [HttpPost]
         [Route("SendEmail")]
         public IActionResult SendEMail(EmailMsg msg)
         {
             eMailClient.Send(msg.To, msg.Msg);
             //return Ok("ok"); returning a string is necessary for jquery $.ajax
-            return Ok();
+            return CreatedAtAction("SendEMail", "email");
         }
     }
 }
