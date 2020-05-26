@@ -13,3 +13,8 @@ Added to .csproj:
 <RuntimeIdentifier>win10-x64;</RuntimeIdentifier>
 Also added --self-contained to DotNetCoreCLI@2 task in azure-pipelines.yaml
 arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingdirectory) --self-contained'
+
+Logging:
+Log to unique directory.
+Program.cs: .WriteTo.File("..\\..\\serilog\\API\\log"
+web.config: stdoutLogFile="\\?\%home%\LogFiles\API\stdout"

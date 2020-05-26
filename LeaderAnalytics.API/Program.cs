@@ -18,7 +18,7 @@ namespace LeaderAnalytics.API
         {
             // Create logs in D:\home\serilog
             Log.Logger = new LoggerConfiguration()
-               .WriteTo.File("..\\..\\serilog\\log", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+               .WriteTo.File("..\\..\\serilog\\API\\log", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                .CreateLogger();
             Log.Information("Leader Analytics API - logger created");
             Log.Information("ConfigureServices started");
