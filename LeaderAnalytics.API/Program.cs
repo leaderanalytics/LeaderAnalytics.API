@@ -20,7 +20,7 @@ namespace LeaderAnalytics.API
             Log.Logger = new LoggerConfiguration()
                .WriteTo.File("..\\..\\serilog\\log", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                .CreateLogger();
-            Log.Information("Logger created");
+            Log.Information("Leader Analytics API - logger created");
             Log.Information("ConfigureServices started");
 
             try
