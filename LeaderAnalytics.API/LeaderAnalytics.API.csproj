@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <UserSecretsId>bd3dbcdc-6dd4-4d53-b3ba-6eff4d06c23f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>

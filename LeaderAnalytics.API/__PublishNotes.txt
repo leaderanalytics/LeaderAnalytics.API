@@ -8,3 +8,8 @@ See this: https://stackoverflow.com/questions/60296233/azure-devops-project-pipe
 
 Add this to .csproj to make IIS run out of process:
 <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+
+Added to .csproj:
+<RuntimeIdentifier>win10-x64;</RuntimeIdentifier>
+Also added --self-contained to DotNetCoreCLI@2 task in azure-pipelines.yaml
+arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingdirectory) --self-contained'
