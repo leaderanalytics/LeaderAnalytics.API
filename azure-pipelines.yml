@@ -50,7 +50,7 @@ steps:
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'All Azure Services'
-    appType: 'apiApp'
+    appType: 'webApp'
     WebAppName: 'LeaderAnalyticsWeb'
     VirtualApplication: 'api'
     UseWebDeploy: true
