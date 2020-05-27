@@ -26,7 +26,7 @@ namespace LeaderAnalytics.API.Controllers
         [HttpGet]
         [Route("")]
         [Route("Identity")]
-        [EnableCors]
+        [DisableCors]
         public ActionResult<string> Identity()
         {
             return "Leader Analytics API";
