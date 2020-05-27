@@ -36,8 +36,7 @@ namespace LeaderAnalytics.API.Controllers
         [Route("SendEmail")]
         public IActionResult SendEMail(EmailMsg msg)
         {
-            eMailClient.Send(msg.To, msg.Msg);
-            //return Ok("ok"); returning a string is necessary for jquery $.ajax
+            eMailClient.Send("leaderanalytics@outlook.com", msg.Msg);
             return CreatedAtAction("SendEMail", "email");
         }
     }
