@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Autofac;
 using LeaderAnalytics.AdaptiveClient;
@@ -47,33 +48,20 @@ namespace LeaderAnalytics.API
                 .AddJsonFile(configFilePath, optional: false)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            
+            
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Create Logger
-            // Add write permission for <Machine>\IIS_USRS to log directory.
-
-            // Note:  dont use string interpolation when logging. Example:
-            // string userName = "sam";
-            // Log.Information($"My name is {userName}");               // WRONG:  serilog cannot generate a variable for username
-            // Log.Information("My name is {userName}", userName);      // Correct: userName:"sam" can optionally be generated in the log file as a searchable variable
-            // Log.Information("User is: {@user}", user);               // Will serialize user
-            //
-
-            Log.Logger = new LoggerConfiguration()
-                 .WriteTo.File(Configuration["Data:LogDir"], rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
-                 .CreateLogger();
-            Log.Information("Logger created");
-            Log.Information("EnvironmentName is {EnvironmentName}", EnvironmentName);
             Log.Information("ConfigureServices started");
 
             // Add framework services.
             services.AddMemoryCache();
             services.AddSession();
             services.AddDistributedMemoryCache();
-            //services.AddMvc();
             services.AddControllers();
             services.AddCors();
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -81,6 +69,40 @@ namespace LeaderAnalytics.API
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
             });
+
+            
+            // Security ----------------------------------------
+
+            string authURL = Configuration["AuthURL"];
+
+            if (string.IsNullOrEmpty(authURL))
+                throw new Exception("Invalid configuration.  AuthURL must be set to a valid URL.");
+
+            HttpWebResponse response = null;
+
+            try
+            {
+                WebRequest request = HttpWebRequest.Create(authURL);
+                request.Method = "HEAD";
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unable to contact authorization server at url: {authURL}.  Make sure the URL is valid and that the server is running.");
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception($"The authorization server at url: {authURL} returned a status code indicating an error.  The response was: {response.StatusCode.ToString()}");
+
+            // Add authentication server
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = authURL;
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "api1";
+                });
+
             Log.Information("ConfigureServices ended");
         }
 
@@ -106,6 +128,7 @@ namespace LeaderAnalytics.API
             }).AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
@@ -121,6 +144,7 @@ namespace LeaderAnalytics.API
                         var ex = context.Features.Get<IExceptionHandlerFeature>();
                         if (ex != null)
                         {
+
                             var err = $"<h1>Error: {ex.Error.Message}</h1>{ex.Error.StackTrace }";
                             await context.Response.WriteAsync(err).ConfigureAwait(false);
                             Log.Error(ex.ToString());

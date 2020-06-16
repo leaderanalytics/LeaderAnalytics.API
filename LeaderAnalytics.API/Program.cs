@@ -16,12 +16,22 @@ namespace LeaderAnalytics.API
     {
         public static void Main(string[] args)
         {
-            // Create logs in D:\home\serilog
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            string logRoot = null;
+            
+            if (env == "Development")
+                logRoot = "c:\\serilog\\API\\log";
+            else
+                logRoot = "..\\..\\serilog\\API\\log";   // Create logs in D:\home\serilog
+
+
             Log.Logger = new LoggerConfiguration()
-               .WriteTo.File("..\\..\\serilog\\API\\log", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+               .WriteTo.File(logRoot, rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                .CreateLogger();
-            Log.Information("Leader Analytics API - logger created");
-            Log.Information("ConfigureServices started");
+
+
+            Log.Information("Leader Analytics API - Program.Main started.");
+            Log.Information("Environment is: {env}", env);
 
             try
             {
@@ -30,6 +40,10 @@ namespace LeaderAnalytics.API
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
+            }
+            finally
+            {
+                Log.CloseAndFlush();
             }
         }
 
@@ -43,4 +57,10 @@ namespace LeaderAnalytics.API
                 .CaptureStartupErrors(true);
             }).UseServiceProviderFactory(new AutofacServiceProviderFactory());
     }
+
+    // Note:  dont use string interpolation when logging. Example:
+    // string userName = "sam";
+    // Log.Information($"My name is {userName}");               // WRONG:  serilog cannot generate a variable for username
+    // Log.Information("My name is {userName}", userName);      // Correct: userName:"sam" can optionally be generated in the log file as a searchable variable
+    // Log.Information("User is: {@user}", user);               // Will serialize user
 }

@@ -9,11 +9,13 @@ using LeaderAnalytics.API.Domain;
 using System.Net.Http;
 using System.Net;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LeaderAnalytics.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MessageController : ControllerBase
     {
         private EMailClient eMailClient;
@@ -23,13 +25,7 @@ namespace LeaderAnalytics.API.Controllers
             this.eMailClient = eMailClient;
         }
 
-        [HttpGet]
-        [Route("")]
-        [Route("Identity")]
-        public ActionResult<string> Identity()
-        {
-            return "Leader Analytics API";
-        }
+        
 
 
         [HttpPost]

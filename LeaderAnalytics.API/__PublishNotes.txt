@@ -17,4 +17,5 @@ arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagi
 Logging:
 Log to unique directory.
 Program.cs: .WriteTo.File("..\\..\\serilog\\API\\log"
-web.config: stdoutLogFile="\\?\%home%\LogFiles\API\stdout"
+web.config: stdoutLogFile="\\?\%home%\LogFiles\API\stdout"  
+WRONG: THIS WILL CAUSE 500 ERRORS: stdoutLogFile=".\logs\stdout". 
