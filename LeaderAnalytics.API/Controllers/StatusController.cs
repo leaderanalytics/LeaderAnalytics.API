@@ -29,7 +29,7 @@ namespace LeaderAnalytics.API.Controllers
         /// Secure method to validate login credentials.
         /// </summary>
         /// <returns></returns>
-        [Authorize]
+        [Authorize(Policy = "DaemonAppRole")]
         [HttpGet]
         [Route("SecureIdentity")]
         public ActionResult<string> SecureIdentity()

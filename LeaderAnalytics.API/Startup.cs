@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,7 @@ using Autofac;
 using LeaderAnalytics.AdaptiveClient;
 using LeaderAnalytics.AdaptiveClient.EntityFrameworkCore;
 using LeaderAnalytics.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +22,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
 using Serilog;
 
 namespace LeaderAnalytics.API
@@ -38,7 +41,7 @@ namespace LeaderAnalytics.API
             EnvironmentName = env.EnvironmentName;
 
             if (EnvironmentName == "Development")
-                devFilePath = "C:\\Users\\sam\\AppData\\Roaming\\LeaderAnalytics\\API";
+                devFilePath = "C:\\Users\\sam\\OneDrive\\LeaderAnalytics\\Config\\API";
             
             configFilePath = Path.Combine(devFilePath, $"appsettings.{env.EnvironmentName}.json");
 
@@ -48,9 +51,6 @@ namespace LeaderAnalytics.API
                 .AddJsonFile(configFilePath, optional: false)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-
-            
-            
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -70,38 +70,32 @@ namespace LeaderAnalytics.API
                 options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
             });
 
-            
+
             // Security ----------------------------------------
 
-            string authURL = Configuration["AuthURL"];
+            // This is required to be instantiated before the OpenIdConnectOptions starts getting configured.
+            // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
+            // 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' instead of 'roles'
+            // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
-            if (string.IsNullOrEmpty(authURL))
-                throw new Exception("Invalid configuration.  AuthURL must be set to a valid URL.");
+            services.AddProtectedWebApi(Configuration);
 
-            HttpWebResponse response = null;
-
-            try
+            // Additional configuration
+            services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                WebRequest request = HttpWebRequest.Create(authURL);
-                request.Method = "HEAD";
-                response = request.GetResponse() as HttpWebResponse;
-            }
-            catch (Exception ex)
+                options.TokenValidationParameters.RoleClaimType = "roles";
+            });
+
+            // Creating policies that wraps the authorization requirements.
+            services.AddAuthorization(options =>
             {
-                throw new Exception($"Unable to contact authorization server at url: {authURL}.  Make sure the URL is valid and that the server is running.");
-            }
+                // The application should only allow tokens which roles claim contains "DaemonAppRole")
+                options.AddPolicy("DaemonAppRole", policy => policy.RequireRole("DaemonAppRole"));
+            });
 
-            if (response.StatusCode != HttpStatusCode.OK)
-                throw new Exception($"The authorization server at url: {authURL} returned a status code indicating an error.  The response was: {response.StatusCode.ToString()}");
 
-            // Add authentication server
-            services.AddAuthentication("Bearer")
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = authURL;
-                    options.RequireHttpsMetadata = false;
-                    options.ApiName = "api1";
-                });
+
 
             Log.Information("ConfigureServices ended");
         }

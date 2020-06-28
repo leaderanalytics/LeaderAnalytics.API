@@ -29,12 +29,10 @@ namespace LeaderAnalytics.API
                .WriteTo.File(logRoot, rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                .CreateLogger();
 
-
-            Log.Information("Leader Analytics API - Program.Main started.");
-            Log.Information("Environment is: {env}", env);
-
             try
             {
+                Log.Information("Leader Analytics API - Program.Main started.");
+                Log.Information("Environment is: {env}", env);
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
