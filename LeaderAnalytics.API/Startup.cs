@@ -36,6 +36,7 @@ namespace LeaderAnalytics.API
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            Log.Information("Start constructing Startup class.");
             Configuration = configuration;
             string devFilePath = string.Empty;
             EnvironmentName = env.EnvironmentName;
@@ -45,12 +46,18 @@ namespace LeaderAnalytics.API
             
             configFilePath = Path.Combine(devFilePath, $"appsettings.{env.EnvironmentName}.json");
 
+            if (File.Exists(configFilePath))
+                Log.Information("Configuration file {f} exists.", configFilePath);
+            else
+                Log.Error("Configuration file {f} was not found.", configFilePath);
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile(configFilePath, optional: false)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+            Log.Information("Constructing Startup class completed.");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -93,16 +100,13 @@ namespace LeaderAnalytics.API
                 // The application should only allow tokens which roles claim contains "DaemonAppRole")
                 options.AddPolicy("DaemonAppRole", policy => policy.RequireRole("DaemonAppRole"));
             });
-
-
-
-
             Log.Information("ConfigureServices ended");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, ILifetimeScope container)
         {
+            Log.Information("Configure Started.");
             app.UseDeveloperExceptionPage(); // must come before UseMvc.
             app.UseSession();
             app.UseCors(x => x.WithOrigins(new string[] {
@@ -145,6 +149,7 @@ namespace LeaderAnalytics.API
                         }
                     });
             });
+            Log.Information("Configure Completed.");
         }
 
 

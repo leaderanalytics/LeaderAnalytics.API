@@ -41,6 +41,7 @@ namespace LeaderAnalytics.API
             }
             finally
             {
+                Log.Information("========== Leader Analytics API - Program.Main is shutting down. ============");
                 Log.CloseAndFlush();
             }
         }
