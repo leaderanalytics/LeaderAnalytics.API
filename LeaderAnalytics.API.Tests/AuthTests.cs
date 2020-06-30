@@ -7,21 +7,8 @@ using LeaderAnalytics.Core.Azure;
 
 namespace LeaderAnalytics.API.Tests
 {
-    [TestFixture]
-    public class AuthTests
+    public class AuthTests : BaseTest
     {
-        
-        private const string configFilePath = "C:\\Users\\sam\\OneDrive\\LeaderAnalytics\\Config\\Web\\appsettings.development.json";
-        private HttpClient apiClient;
-        private AzureADConfig config;
-
-        [SetUp]
-        public void Setup()
-        {
-            config = AzureADConfig.ReadFromConfigFile(configFilePath);
-            ClientCredentialsHelper helper = new ClientCredentialsHelper(config);
-            apiClient = helper.AuthorizedClient();
-        }
 
         [Test]
         public async Task server_is_running()
@@ -37,11 +24,12 @@ namespace LeaderAnalytics.API.Tests
             HttpClient client = new HttpClient() { BaseAddress = new Uri(config.APIBaseAddress) };
             
             // ...should pass when we try to access an unsecured API
-            HttpResponseMessage response = await client.GetAsync("status/Identity");
+            HttpResponseMessage response = await client.GetAsync("api/status/Identity");
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
             // ...should fail when we try to access a secure API
-            response = await client.GetAsync("status/SecureIdentity");
+            response = await client.GetAsync("api/status/SecureIdentity");
+            string content = await response.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
@@ -49,7 +37,7 @@ namespace LeaderAnalytics.API.Tests
         public async Task secure_access_is_granted_when_logged_in()
         {
             // Acquire a secured resource
-            HttpResponseMessage response = await apiClient.GetAsync("status/SecureIdentity");
+            HttpResponseMessage response = await apiClient.GetAsync("api/status/SecureIdentity");
             string content = await response.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }

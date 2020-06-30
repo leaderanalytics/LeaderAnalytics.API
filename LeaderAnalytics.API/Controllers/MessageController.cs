@@ -25,8 +25,6 @@ namespace LeaderAnalytics.API.Controllers
             this.eMailClient = eMailClient;
         }
 
-        
-
 
         [HttpPost]
         [Route("SendEmail")]
