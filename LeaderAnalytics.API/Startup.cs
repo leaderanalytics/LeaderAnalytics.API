@@ -66,7 +66,7 @@ namespace LeaderAnalytics.API
             Log.Information("ConfigureServices started");
 
             // Add framework services.
-            services.AddMemoryCache();
+            services.AddMemoryCache(x => { x.SizeLimit = 100; });
             services.AddSession();
             services.AddDistributedMemoryCache();
             services.AddControllers();

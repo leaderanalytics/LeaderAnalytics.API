@@ -10,6 +10,14 @@ namespace LeaderAnalytics.API.Tests
     public class AuthTests : BaseTest
     {
 
+        // --------------------------------------- \\
+        // Set the correct environment in BaseTest \\
+        // --------------------------------------- \\
+
+
+
+
+
         [Test]
         public async Task server_is_running()
         {
