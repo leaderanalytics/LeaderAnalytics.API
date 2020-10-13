@@ -152,7 +152,6 @@ namespace LeaderAnalytics.API
             Log.Information("Configure Completed.");
         }
 
-
         public void ConfigureContainer(ContainerBuilder builder)
         {
 
@@ -165,6 +164,8 @@ namespace LeaderAnalytics.API
                 EMailClient e = new EMailClient(p);
                 return e;
             }).SingleInstance();
+
+            builder.RegisterType<Services.CaptchService>().SingleInstance();
 
             // Don't build the container; that gets done for you.
         }
