@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using LeaderAnalytics.API.Model;
 using LeaderAnalytics.API.Services;
 using Serilog;
+using System.Net.Mail;
 
 namespace LeaderAnalytics.API.Controllers
 {
@@ -32,8 +33,8 @@ namespace LeaderAnalytics.API.Controllers
 
 
         [HttpPost]
-        [Route("SendEmail")]
-        public IActionResult SendEMail(EmailMsg msg)
+        [Route("SendContactRequest")]
+        public IActionResult SendContactRequest(ContactRequest msg)
         {
 
             if (string.IsNullOrEmpty(msg.IP_Address) || string.IsNullOrEmpty(msg.CaptchaCode))
@@ -52,11 +53,62 @@ namespace LeaderAnalytics.API.Controllers
             {
                 eMailClient.Send("leaderanalytics@outlook.com", msg.Msg);
                 captchaService.SetSubmitTime(msg.IP_Address, msg.CaptchaCode);
-                result = CreatedAtAction("SendEMail", "email");
+                result = CreatedAtAction("SendContactRequest", "email");
             }
             return result;
         }
 
-        
+        [HttpPost]
+        [Route("SendEMailMessage")]
+        public IActionResult SendEmailMessage(EmailMessage msg)
+        {
+            if(msg == null)
+                return BadRequest("Required EmailMessage parameter is null or invalid.");
+            if (msg.To == null || msg.To.Length == 0)
+                return BadRequest("At least one to address is required.");
+            else if(string.IsNullOrEmpty(msg.Msg))
+                return BadRequest("Message cannot be null.");
+            else if (string.IsNullOrEmpty(msg.From))
+                return BadRequest("From address cannot be null.");
+            
+            try
+            {
+                eMailClient.Send(msg.To, msg.From, msg.Subject, msg.Msg, msg.IsHTML);
+            }
+            catch (Exception ex)
+            {
+                string s = ex.ToString();
+                Log.Error(s);
+                return StatusCode(500, s);
+            }
+            return CreatedAtAction("SendEMailMessage", "email");
+        }
+
+
+        [HttpPost]
+        [Route("SendMailMessage")]
+        public IActionResult SendMailMessage(MailMessage msg)
+        {
+            if (msg == null)
+                return BadRequest("Required EmailMessage parameter is null or invalid.");
+            if (msg.To == null || ! msg.To.Any())
+                return BadRequest("At least one to address is required.");
+            else if (string.IsNullOrEmpty(msg.Body))
+                return BadRequest("Message cannot be null.");
+            else if (msg.From == null)
+                return BadRequest("From address cannot be null.");
+
+            try
+            {
+                eMailClient.Send(msg);
+            }
+            catch (Exception ex)
+            {
+                string s = ex.ToString();
+                Log.Error(s);
+                return StatusCode(500, s);
+            }
+            return CreatedAtAction("SendMailMessage", "email");
+        }
     }
 }
