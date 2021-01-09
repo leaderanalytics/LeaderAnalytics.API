@@ -23,7 +23,7 @@ namespace LeaderAnalytics.API
             if (env == "Development")
                 logRoot = "c:\\serilog\\API\\log";
             else
-                logRoot = "..\\..\\serilog\\API\\log";   // Create logs in D:\home\serilog
+                logRoot = "..\\..\\LogFiles\\API\\log";   // Create logs in D:\home\LogFiles
 
 
             Log.Logger = new LoggerConfiguration()
