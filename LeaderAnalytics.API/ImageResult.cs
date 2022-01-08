@@ -1,54 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-namespace LeaderAnalytics.API
+﻿namespace LeaderAnalytics.API;
+
+public class ImageResult : ActionResult
 {
-    public class ImageResult : ActionResult
+    private Image _Image { get; set; }
+    private ImageFormat _ImageFormat { get; set; }
+
+    public ImageResult(Image Image, ImageFormat ImageFormat)
     {
-        private Image _Image { get; set; }
-        private ImageFormat _ImageFormat { get; set; }
+        _Image = Image;
+        _ImageFormat = ImageFormat;
+    }
 
-        public ImageResult(Image Image, ImageFormat ImageFormat)
-        {
-            _Image = Image;
-            _ImageFormat = ImageFormat;
-        }
+    public FileStreamResult GetFileStreamResult()
+    {
 
-        public FileStreamResult GetFileStreamResult()
-        {
+        if (_Image == null)
+            throw new ArgumentNullException("Image");
 
-            if (_Image == null)
-                throw new ArgumentNullException("Image");
+        if (_ImageFormat == null)
+            throw new ArgumentNullException("ImageFormat");
 
-            if (_ImageFormat == null)
-                throw new ArgumentNullException("ImageFormat");
+        string fmt = "";
 
-            string fmt = "";
+        if (_ImageFormat.Equals(ImageFormat.Bmp))
+            fmt = "image/bmp";
+        else if (_ImageFormat.Equals(ImageFormat.Gif))
+            fmt = "image/gif";
+        else if (_ImageFormat.Equals(ImageFormat.Icon))
+            fmt = "image/vnd.microsoft.icon";
+        else if (_ImageFormat.Equals(ImageFormat.Jpeg))
+            fmt = "image/jpeg";
+        else if (_ImageFormat.Equals(ImageFormat.Png))
+            fmt = "image/png";
+        else if (_ImageFormat.Equals(ImageFormat.Tiff))
+            fmt = "image/tiff";
+        else if (_ImageFormat.Equals(ImageFormat.Wmf))
+            fmt = "image/wmf";
 
-            if (_ImageFormat.Equals(ImageFormat.Bmp))
-                fmt = "image/bmp";
-            else if (_ImageFormat.Equals(ImageFormat.Gif))
-                fmt = "image/gif";
-            else if (_ImageFormat.Equals(ImageFormat.Icon))
-                fmt = "image/vnd.microsoft.icon";
-            else if (_ImageFormat.Equals(ImageFormat.Jpeg))
-                fmt = "image/jpeg";
-            else if (_ImageFormat.Equals(ImageFormat.Png))
-                fmt = "image/png";
-            else if (_ImageFormat.Equals(ImageFormat.Tiff))
-                fmt = "image/tiff";
-            else if (_ImageFormat.Equals(ImageFormat.Wmf))
-                fmt = "image/wmf";
-
-            MemoryStream stream = new MemoryStream();
-            _Image.Save(stream, _ImageFormat);
-            stream.Position = 0;
-            return new FileStreamResult(stream, fmt);
-        }
+        MemoryStream stream = new MemoryStream();
+        _Image.Save(stream, _ImageFormat);
+        stream.Position = 0;
+        return new FileStreamResult(stream, fmt);
     }
 }
