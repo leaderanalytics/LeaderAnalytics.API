@@ -47,7 +47,7 @@ steps:
     azureSubscription: 'All Azure Services'
     appType: 'webApp'
     WebAppName: 'LeaderAnalyticsWeb'
-    VirtualApplication: 'api'
+    VirtualApplication: '/api'
     UseWebDeploy: true
     packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
 
