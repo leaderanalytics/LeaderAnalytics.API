@@ -34,7 +34,7 @@ public class MessageController : ControllerBase
         }
         else
         {
-            eMailClient.Send("leaderanalytics@outlook.com", msg.Msg);
+            eMailClient.Send("leaderanalytics@outlook.com, sam.wheat@outlook.com", msg.Msg);
             captchaService.SetSubmitTime(msg.IP_Address, msg.CaptchaCode);
             result = CreatedAtAction("SendContactRequest", "email");
         }
