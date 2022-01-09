@@ -43,7 +43,6 @@ public class Program
 
         try
         {
-            Log.Information("email smtp:login {e}", appConfig["smtp:login"]);
             Log.Information("Leader Analytics API - Program.Main started.");
             Log.Information("Environment is: {env}", environmentName);
             Log.Information("Log files will be written to {logRoot}", logFolder);
@@ -92,8 +91,8 @@ public class Program
         if (envName == LeaderAnalytics.Core.EnvironmentName.production)
         {
             var client = new SecretClient(new Uri("https://leaderanalyticsvault.vault.azure.net/"), new DefaultAzureCredential());
-            Task<Azure.Response<KeyVaultSecret>> emailAccountTask = client.GetSecretAsync("EmailAccount");
-            Task<Azure.Response<KeyVaultSecret>> emailPasswordTask = client.GetSecretAsync("EmailPassword");
+            Task<Azure.Response<KeyVaultSecret>> emailAccountTask = client.GetSecretAsync("LeaderAnalytics-EmailAccount");
+            Task<Azure.Response<KeyVaultSecret>> emailPasswordTask = client.GetSecretAsync("LeaderAnalytics-EmailPassword");
             await Task.WhenAll(emailAccountTask, emailPasswordTask);
             cfg["smtp:login"] = cfg["smtp:login"].Replace("{EmailAccount}", emailAccountTask.Result.Value.Value);
             cfg["smtp:auth"] = cfg["smtp:auth"].Replace("{EmailPassword}", emailPasswordTask.Result.Value.Value);
