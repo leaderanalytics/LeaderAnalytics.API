@@ -43,6 +43,7 @@ public class Program
 
         try
         {
+            Log.Information("email smtp:login {e}", appConfig["smtp: login"]);
             Log.Information("Leader Analytics API - Program.Main started.");
             Log.Information("Environment is: {env}", environmentName);
             Log.Information("Log files will be written to {logRoot}", logFolder);
