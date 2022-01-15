@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeaderAnalytics.API;
 
@@ -23,66 +24,24 @@ public class Startup
         services.AddDistributedMemoryCache();
         services.AddCors();
         IdentityModelEventSource.ShowPII = true;
-        // Security ----------------------------------------
+        
+        // Authentication
 
-        // This is required to be instantiated before the OpenIdConnectOptions starts getting configured.
-        // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
-        // 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' instead of 'roles'
-        // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
-        // JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-
-
-
-        // https://docs.microsoft.com/en-us/answers/questions/688165/multiple-authentication-schems-azure-ad-and-azure.html
-        //        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //        .AddJwtBearer("AzureAdB2C", options =>
-        //{
-        //            options.TokenValidationParameters.RoleClaimType = "name";
-        //        })
-        //        .AddJwtBearer("AzureAD", options =>
-        //        {
-        //            options.TokenValidationParameters.RoleClaimType = "roles";
-        //        });
-
-
-
-        // Adds Microsoft Identity platform (AAD v2.0) support to protect this Api
+        // This configuration is necessary because we are using two jwt handlers - One for user auth, the other for machine-to-machine.
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-       //         .AddMicrosoftIdentityWebApi(Configuration, "AzureAdB2C");
-                .AddMicrosoftIdentityWebApi(Configuration, "AzureAd");
-
-        //{
-        //    //Configuration.Bind("AzureAd", options);
-        //    Configuration.Bind("AzureAdB2C", options);
-        //},        options =>
-
-        //{
-        //    //Configuration.Bind("AzureAd", options);
-        //    Configuration.Bind("AzureAdB2C", options);
-        //}); 
-
-
-
-        //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //        .AddMicrosoftIdentityWebApi(options =>
-        //        {
-        //            Configuration.Bind("AzureAdB2C", options);
-
-        //            options.TokenValidationParameters.NameClaimType = "name";
-        //        },
-        //options => { Configuration.Bind("AzureAdB2C", options); });
-
-
-
-
-        // Creating policies that wraps the authorization requirements.
-
+            .AddJwtBearer("AzureAdB2C", options =>
+            {
+                options.Authority = Configuration["AzureAdB2C:Instance"] + Configuration["AzureAdB2C:Domain"] + "/" + Configuration["AzureAdB2C:SignUpSignInPolicyId"] + "/v2.0";
+                options.Audience = Configuration["AzureAdB2C:ClientId"];
+            })
+            .AddMicrosoftIdentityWebApi(Configuration, "AzureAd"); // machine-to-machine
 
         services.AddAuthorization(options =>
         {
             // The application should only allow tokens which roles claim contains "DaemonAppRole")
             options.AddPolicy("DaemonAppRole", policy => policy.RequireRole("DaemonAppRole"));
         });
+        
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

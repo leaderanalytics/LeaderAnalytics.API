@@ -22,7 +22,7 @@ public class StatusController : ControllerBase
     /// </summary>
     /// <returns></returns>
 
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "AzureAdB2C")]
     [HttpGet]
     [Route("SecureIdentity")]
     [RequiredScope("access_as_user")]
