@@ -1,0 +1,15 @@
+Apps for Auth tests are defined in B2C Active Directory.
+Apps for Email test are defined in standard Active Directory.
+
+
+
+
+================================================================================================================
+Follow this article to edit the app manifest and add an APPLICATION permission
+Set up OAuth 2.0 client credentials flow in Azure Active Directory B2C
+https://learn.microsoft.com/en-us/azure/active-directory-b2c/client-credentials-grant-flow?pivots=b2c-user-flow
+================================================================================================================
+How to correctly assign App Roles:
+https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps
+================================================================================================================
+

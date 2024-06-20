@@ -29,6 +29,14 @@ public class CaptchaController : ControllerBase
     }
 
     [HttpGet]
+    [Route("CaptchaCode")]
+    public ActionResult<string> CaptchaCode(string ipaddress)
+    {
+        SubmitHistory ch = captchaService.GetSubmitHistory(ipaddress);
+        return Content(ch?.CaptchaCode ?? string.Empty);
+    }
+
+    [HttpGet]
     [Route("CanSubmit")]
     public ActionResult<string> CanSubmit(string ipaddress, string code)
     {

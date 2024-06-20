@@ -13,10 +13,9 @@ public class CaptchService
         random = new Random();
     }
 
-
-    public CaptchaImage GetCaptchaImage(string ipaddress)
+    public SubmitHistory GetSubmitHistory(string ipaddress)
     {
-        string code = string.Empty;
+        
         DateTime now = DateTime.UtcNow;
 
         // Check if an unexpired Captcha has already been assigned to this IP.  If so, use it.
@@ -24,13 +23,22 @@ public class CaptchService
 
         if (ch == null)
         {
+            string code = string.Empty;
+
             for (int i = 0; i < 3; i++)
                 code = String.Concat(code, random.Next(10).ToString());
 
             ch = new SubmitHistory { IP_Address = ipaddress, CreateTime = DateTime.UtcNow, CaptchaCode = code };
             submitHistory.Add(ch);
         }
+        return ch;
+    }
 
+
+
+    public CaptchaImage GetCaptchaImage(string ipaddress)
+    {
+        SubmitHistory ch = GetSubmitHistory(ipaddress);
         CaptchaImage ci = new CaptchaImage(ch.CaptchaCode, 100, 50, "Century Schoolbook");
         return ci;
     }

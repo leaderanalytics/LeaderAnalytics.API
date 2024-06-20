@@ -15,7 +15,7 @@ public class AuthTests : BaseTest
     public async Task server_is_running()
     {
         HttpResponseMessage response = await apiClient.GetAsync("/");
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
     [Test]
@@ -26,12 +26,12 @@ public class AuthTests : BaseTest
 
         // ...should pass when we try to access an unsecured API
         HttpResponseMessage response = await client.GetAsync("api/status/Identity");
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         // ...should fail when we try to access a secure API
         response = await client.GetAsync("api/status/SecureIdentity");
         string content = await response.Content.ReadAsStringAsync();
-        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
 
     [Test]
@@ -40,6 +40,6 @@ public class AuthTests : BaseTest
         // Acquire a secured resource
         HttpResponseMessage response = await apiClient.GetAsync("api/status/SecureIdentity");
         string content = await response.Content.ReadAsStringAsync();
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(HttpStatusCode.OK, Is.EqualTo(response.StatusCode));
     }
 }

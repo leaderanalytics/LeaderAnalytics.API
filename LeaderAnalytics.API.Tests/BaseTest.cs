@@ -1,17 +1,33 @@
-﻿namespace LeaderAnalytics.API.Tests;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace LeaderAnalytics.API.Tests;
 
 [TestFixture]
 public abstract class BaseTest
 {
-    protected const string configFilePath = "C:\\Users\\sam\\OneDrive\\LeaderAnalytics\\Config\\Web\\appsettings.development.json";
+    protected string configFilePath = "C:\\Users\\sam\\OneDrive\\LeaderAnalytics\\Config\\Vyntix.Web\\appsettings.development.json";
     protected HttpClient apiClient;
-    protected AzureADConfig config;
+    protected IAzureADConfig config;
+    protected bool production = false; // <------ Environment
+
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
-        config = AzureADConfig.ReadFromConfigFile(configFilePath);
+        
+        string clientSecret = string.Empty;
+
+        if (production)
+        {
+            configFilePath = "C:\\Users\\sam\\OneDrive\\LeaderAnalytics\\Config\\Vyntix.Web\\appsettings.production.json";
+            IConfigurationRoot cfg = await ConfigBuilder.BuildConfig(Core.EnvironmentName.production);
+        }
+
+        config = AzureADB2CConfig.ReadFromConfigFile(configFilePath, "AzureADB2C");
         ClientCredentialsHelper helper = new ClientCredentialsHelper(config);
         apiClient = helper.AuthorizedClient();
+
+        if (production)
+            apiClient.BaseAddress = new Uri("https://localhost:5010");
     }
 }

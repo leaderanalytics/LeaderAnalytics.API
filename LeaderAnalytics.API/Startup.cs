@@ -24,7 +24,7 @@ public class Startup
         services.AddDistributedMemoryCache();
         services.AddCors();
         IdentityModelEventSource.ShowPII = true;
-        
+
         // Authentication
 
         // This configuration is necessary because we are using two jwt handlers - One for user auth, the other for machine-to-machine.
@@ -39,7 +39,7 @@ public class Startup
         services.AddAuthorization(options =>
         {
             // The application should only allow tokens which roles claim contains "DaemonAppRole")
-            options.AddPolicy("DaemonAppRole", policy => policy.RequireRole("DaemonAppRole"));
+           options.AddPolicy("DaemonAppRole", policy => policy.RequireRole("DaemonAppRole"));
         });
         
         services.AddControllers().AddJsonOptions(options =>
