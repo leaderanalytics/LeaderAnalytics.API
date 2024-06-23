@@ -12,4 +12,7 @@ https://learn.microsoft.com/en-us/azure/active-directory-b2c/client-credentials-
 How to correctly assign App Roles:
 https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps
 ================================================================================================================
+Quickstart: Send email with SMTP
+https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email-smtp/send-email-smtp?pivots=smtp-method-smtpclient
+================================================================================================================
 

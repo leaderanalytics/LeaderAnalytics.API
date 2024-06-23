@@ -22,7 +22,7 @@ public class AuthTests : BaseTest
     public async Task secure_access_is_denied_when_not_logged_in()
     {
         // create a new plain old http client with no credentials 
-        HttpClient client = new HttpClient() { BaseAddress = new Uri(config.APIBaseAddress) };
+        HttpClient client = new HttpClient() { BaseAddress = new Uri(production ? localAPI_Address : config.APIBaseAddress) };
 
         // ...should pass when we try to access an unsecured API
         HttpResponseMessage response = await client.GetAsync("api/status/Identity");

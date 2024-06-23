@@ -9,7 +9,7 @@ public abstract class BaseTest
     protected HttpClient apiClient;
     protected IAzureADConfig config;
     protected bool production = false; // <------ Environment
-
+    protected const string localAPI_Address = "https://localhost:5010";
 
     [SetUp]
     public async Task Setup()
@@ -28,6 +28,6 @@ public abstract class BaseTest
         apiClient = helper.AuthorizedClient();
 
         if (production)
-            apiClient.BaseAddress = new Uri("https://localhost:5010");
+            apiClient.BaseAddress = new Uri(localAPI_Address);
     }
 }
